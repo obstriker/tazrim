@@ -1,5 +1,6 @@
 import React from 'react';
 import { ChevronLeft, Download } from 'lucide-react';
+import axios from 'axios';
 
 interface TaxSummaryFormProps {
   formData: any;
@@ -27,6 +28,34 @@ export function TaxSummaryForm({ formData, onBack }: TaxSummaryFormProps) {
   const totalExpenses = calculateTotalExpenses();
   const netIncome = totalIncome - totalExpenses;
   const estimatedTax = netIncome * 0.25; // Simplified tax calculation
+
+  const handleDownloadReport = async () => {
+    const reportData = {
+      totalIncome,
+      totalExpenses,
+      netIncome,
+      estimatedTax,
+      businessDetails: formData.business,
+    };
+
+    try {
+      console.log(reportData);
+      const response = await axios.post('http://localhost:3000/api/report', reportData, {
+        responseType: 'blob', // Important for handling binary data
+      });
+
+      // Create a URL for the blob and trigger a download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'report.csv'); // Specify the file name
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading the report:', error);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -101,6 +130,7 @@ export function TaxSummaryForm({ formData, onBack }: TaxSummaryFormProps) {
         </button>
         <button
           type="button"
+          onClick={handleDownloadReport}
           className="btn-primary"
         >
           <Download className="mr-2 h-4 w-4" />
