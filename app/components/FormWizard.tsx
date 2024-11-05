@@ -1,6 +1,13 @@
-"use client"
+'use client';
 import React, { useState } from 'react';
-import { ChevronRight, ChevronLeft, DollarSign, Building2, Receipt, Calculator } from 'lucide-react';
+import {
+  ChevronRight,
+  ChevronLeft,
+  DollarSign,
+  Building2,
+  Receipt,
+  Calculator,
+} from 'lucide-react';
 import { BusinessInfoForm } from './forms/BusinessInfoForm';
 import { IncomeSourcesForm } from './forms/IncomeSourcesForm';
 import { ExpensesForm } from './forms/ExpensesForm';
@@ -19,26 +26,26 @@ export function FormWizard() {
     business: {},
     income: { sources: [] },
     expenses: { expenses: [] },
-    tax: {}
+    tax: {},
   });
 
   const handleNext = (stepData: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [steps[currentStep].id]: stepData
+      [steps[currentStep].id]: stepData,
     }));
-    setCurrentStep(prev => Math.min(prev + 1, steps.length - 1));
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
   };
 
   const handleBack = () => {
-    setCurrentStep(prev => Math.max(prev - 1, 0));
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
   };
 
   return (
     <div>
       <div className="mb-8">
         <nav aria-label="Progress">
-          <ol className="flex items-center">
+          <ol className="flex items-center justify-center">
             {steps.map((step, index) => (
               <li
                 key={step.id}
@@ -75,9 +82,9 @@ export function FormWizard() {
 
       <div className="mt-16">
         {currentStep === 0 && (
-          <BusinessInfoForm 
-            initialData={formData.business} 
-            onNext={handleNext} 
+          <BusinessInfoForm
+            initialData={formData.business}
+            onNext={handleNext}
           />
         )}
         {currentStep === 1 && (
@@ -95,10 +102,7 @@ export function FormWizard() {
           />
         )}
         {currentStep === 3 && (
-          <TaxSummaryForm
-            formData={formData}
-            onBack={handleBack}
-          />
+          <TaxSummaryForm formData={formData} onBack={handleBack} />
         )}
       </div>
     </div>
