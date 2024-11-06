@@ -7,17 +7,23 @@ import {
   Building2,
   Receipt,
   Calculator,
+  CreditCard,
+  Download,
 } from 'lucide-react';
 import { BusinessInfoForm } from './forms/BusinessInfoForm';
 import { IncomeSourcesForm } from './forms/IncomeSourcesForm';
 import { ExpensesForm } from './forms/ExpensesForm';
 import { TaxSummaryForm } from './forms/TaxSummaryForm';
+import { PaymentForm } from './forms/PaymentForm';
+import { DownloadReportForm } from './forms/DownloadReportForm';
 
 const steps = [
   { id: 'business', label: 'Business Info', icon: Building2 },
   { id: 'income', label: 'Income Sources', icon: DollarSign },
   { id: 'expenses', label: 'Expenses', icon: Receipt },
   { id: 'tax', label: 'Tax Details', icon: Calculator },
+  { id: 'payment', label: 'Payment', icon: CreditCard },
+  { id: 'download', label: 'Download', icon: Download },
 ];
 
 export function FormWizard() {
@@ -27,6 +33,7 @@ export function FormWizard() {
     income: { sources: [] },
     expenses: { expenses: [] },
     tax: {},
+    payment: {},
   });
 
   const handleNext = (stepData: any) => {
@@ -43,37 +50,36 @@ export function FormWizard() {
 
   return (
     <div>
-      <div className="mb-8">
+      <div className="mb-16">
         <nav aria-label="Progress">
           <ol className="flex items-center justify-center">
             {steps.map((step, index) => (
-              <li
-                key={step.id}
-                className={`relative ${
-                  index !== steps.length - 1 ? 'pr-8 sm:pr-20' : ''
-                }`}
-              >
-                <div className="flex items-center">
-                  <div
-                    className={`relative flex h-12 w-12 items-center justify-center rounded-full ${
-                      index <= currentStep
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-500'
-                    }`}
-                  >
-                    <step.icon className="h-6 w-6" />
-                  </div>
+              <li key={step.id} className="relative" style={{ width: '150px' }}>
+                <div className="flex flex-col items-center">
                   {index !== steps.length - 1 && (
-                    <div className="absolute top-6 left-12 h-0.5 w-full bg-gray-200">
+                    <div 
+                      className="absolute left-[50%] top-7 w-[calc(150px)] h-0.5 bg-gray-800"
+                      style={{ transform: 'translateX(25%)' }}
+                    >
                       {index < currentStep && (
-                        <div className="h-full w-full bg-blue-600" />
+                        <div className="h-full w-full bg-purple-600" />
                       )}
                     </div>
                   )}
+                  <div
+                    className={`flex h-14 w-14 items-center justify-center rounded-xl mb-4 relative z-10
+                      ${
+                        index <= currentStep
+                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
+                          : 'bg-gray-900 text-gray-500 border border-purple-400/10'
+                      }`}
+                  >
+                    <step.icon className="h-6 w-6" />
+                  </div>
+                  <span className="text-sm font-medium text-gray-200 text-center absolute -bottom-6 w-full">
+                    {step.label}
+                  </span>
                 </div>
-                <span className="absolute left-0 top-14 w-32 text-center text-sm font-medium text-gray-500">
-                  {step.label}
-                </span>
               </li>
             ))}
           </ol>
@@ -102,7 +108,24 @@ export function FormWizard() {
           />
         )}
         {currentStep === 3 && (
-          <TaxSummaryForm formData={formData} onBack={handleBack} />
+          <TaxSummaryForm
+            formData={formData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        )}
+        {currentStep === 4 && (
+          <PaymentForm
+            formData={formData}
+            onNext={handleNext}
+            onBack={handleBack}
+          />
+        )}
+        {currentStep === 5 && (
+          <DownloadReportForm
+            formData={formData}
+            onBack={handleBack}
+          />
         )}
       </div>
     </div>
