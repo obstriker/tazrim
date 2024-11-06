@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Background Colors */
+  --color-bg-primary: #000000;
+  --color-bg-secondary: rgba(98, 38, 208, 0.05);
+  --color-bg-card: rgba(17, 17, 23, 0.95);
+  --color-bg-input: rgba(30, 30, 35, 0.95);
+  
+  /* Text Colors */
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a5a5a5;
+  --color-text-muted: #9ca3af;
+  --color-text-input: #e5e7eb;
+  
+  /* Border Colors */
+  --color-border-primary: rgba(139, 92, 246, 0.2);
+  --color-border-secondary: rgba(139, 92, 246, 0.1);
+  
+  /* Accent Colors */
+  --color-accent: #8b5cf6;
+  --color-accent-light: #9f75ff;
+  --color-accent-dark: #6d28d9;
+}
+
+@layer base {
+  body {
+    @apply bg-gradient-to-b from-black via-gray-900 to-black text-white min-h-screen;
+  }
+
+  /* Input placeholder styles */
+  input::placeholder {
+    @apply text-text-muted;
+  }
+
+  /* Select element text color */
+  select {
+    @apply text-text-input;
+  }
+
+  /* Select element placeholder color */
+  select option {
+    @apply bg-input text-text-input;
+  }
+
+  /* Select element placeholder option */
+  select option:first-child {
+    @apply text-text-muted;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center px-6 py-3 bg-accent hover:bg-accent-light text-white font-medium 
+           rounded-xl transition-all shadow-accent-lg
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center px-6 py-3 border border-accent-border text-white 
+           font-medium rounded-xl hover:bg-accent-hover transition-all backdrop-blur-sm;
+  }
+
+  .form-card {
+    @apply p-8 bg-card rounded-2xl border border-border-primary relative
+           backdrop-blur-sm shadow-accent;
+  }
+
+  .form-input {
+    @apply w-full px-4 py-3 bg-input border border-border-primary rounded-xl text-text-input
+           placeholder-text-muted focus:ring-2 focus:ring-accent focus:border-accent 
+           backdrop-blur-sm transition-all;
+  }
+
+  .form-select {
+    @apply w-full px-4 py-3 bg-input border border-border-primary rounded-xl text-text-input
+           focus:ring-2 focus:ring-accent focus:border-accent backdrop-blur-sm transition-all;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-text-secondary mb-2;
+  }
+
+  .gradient-border {
+    @apply relative rounded-2xl p-[1px] bg-gradient-to-r from-accent to-accent-light;
+  }
+
+  .glass-card {
+    @apply bg-card backdrop-blur-xl;
+  }
+
+  .summary-card {
+    @apply bg-card rounded-xl border border-border-secondary p-4;
+  }
+
+  .form-section {
+    @apply bg-card p-6 rounded-xl border border-border-primary backdrop-blur-sm;
+  }
+}
