@@ -8,26 +8,26 @@
   --color-bg-secondary-light: rgba(98, 38, 208, 0.05);
   --color-bg-card-light: rgba(249, 250, 251, 0.95);
   --color-bg-input-light: rgba(255, 255, 255, 0.95);
-  --color-text-primary-light: #111827;
-  --color-text-secondary-light: #4B5563;
-  --color-text-muted-light: #6B7280;
-  --color-border-primary-light: rgba(139, 92, 246, 0.2);
-  --color-border-secondary-light: rgba(139, 92, 246, 0.1);
+  --color-text-primary-light: #1a1a1a;
+  --color-text-secondary-light: #4a5568;
+  --color-text-muted-light: #718096;
+  --color-border-primary-light: rgba(139, 92, 246, 0.3);
+  --color-border-secondary-light: rgba(139, 92, 246, 0.2);
   --color-accent-light: #8B5CF6;
   --color-accent-hover-light: #7C3AED;
 
   /* Dark Mode Colors */
-  --color-bg-primary-dark: #000000;
-  --color-bg-secondary-dark: rgba(98, 38, 208, 0.05);
+  --color-bg-primary-dark: #0a0a0f;
+  --color-bg-secondary-dark: rgba(139, 92, 246, 0.1);
   --color-bg-card-dark: rgba(17, 17, 23, 0.95);
   --color-bg-input-dark: rgba(30, 30, 35, 0.95);
   --color-text-primary-dark: #ffffff;
-  --color-text-secondary-dark: #a5a5a5;
-  --color-text-muted-dark: #9ca3af;
-  --color-border-primary-dark: rgba(139, 92, 246, 0.2);
-  --color-border-secondary-dark: rgba(139, 92, 246, 0.1);
-  --color-accent-dark: #8B5CF6;
-  --color-accent-hover-dark: #9F75FF;
+  --color-text-secondary-dark: #cbd5e0;
+  --color-text-muted-dark: #a0aec0;
+  --color-border-primary-dark: rgba(139, 92, 246, 0.3);
+  --color-border-secondary-dark: rgba(139, 92, 246, 0.2);
+  --color-accent-dark: #9F75FF;
+  --color-accent-hover-dark: #B794F4;
 
   /* Default to light theme */
   --color-bg-primary: var(--color-bg-primary-light);
@@ -60,6 +60,10 @@
 @layer base {
   body {
     @apply bg-background text-text-primary transition-colors duration-200;
+    background-image: radial-gradient(circle at top right, rgba(139, 92, 246, 0.15), transparent 60%),
+                      radial-gradient(circle at bottom left, rgba(124, 58, 237, 0.1), transparent 60%);
+    background-size: 100% 100%;
+    background-attachment: fixed;
   }
 
   input::placeholder {
@@ -78,31 +82,37 @@
 @layer components {
   .btn-primary {
     @apply inline-flex items-center px-6 py-3 bg-accent hover:bg-accent-hover text-white font-medium 
-           rounded-xl transition-all shadow-accent-md
-           disabled:opacity-50 disabled:cursor-not-allowed;
+           rounded-xl transition-all duration-200 shadow-accent-lg
+           hover:shadow-accent-xl hover:-translate-y-0.5
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 
+           disabled:hover:shadow-accent-lg;
   }
 
-.btn-secondary {
-  @apply inline-flex items-center px-6 py-3 border border-accent border-opacity-20 text-text-primary
-         font-medium rounded-xl hover:bg-accent hover:bg-opacity-10 transition-all backdrop-blur-sm;
-}
+  .btn-secondary {
+    @apply inline-flex items-center px-6 py-3 border-2 border-accent-20 text-text-primary
+           font-medium rounded-xl hover:bg-accent-10 transition-all duration-200 backdrop-blur-sm
+           hover:border-accent-30 shadow-accent-sm hover:shadow-accent hover:-translate-y-0.5;
+  }
 
   .form-card {
     @apply p-8 bg-bg-card rounded-2xl border border-border-primary
-           backdrop-blur-sm shadow-accent-sm;
+           backdrop-blur-sm shadow-accent-lg hover:shadow-accent-xl
+           transition-all duration-200;
   }
 
   .form-input {
-    @apply w-full px-4 py-3 bg-bg-input border border-border-primary rounded-xl
+    @apply w-full px-4 py-3 bg-bg-input border-2 border-border-primary rounded-xl
            text-text-primary placeholder-text-muted
-           focus:ring-2 focus:ring-accent focus:border-accent 
-           backdrop-blur-sm transition-all;
+           focus:ring-2 focus:ring-accent-30 focus:border-accent-50
+           hover:border-accent-30 transition-all duration-200
+           backdrop-blur-sm shadow-accent-sm;
   }
 
   .form-select {
-    @apply w-full px-4 py-3 bg-bg-input border border-border-primary rounded-xl
-           text-text-primary focus:ring-2 focus:ring-accent focus:border-accent 
-           backdrop-blur-sm transition-all;
+    @apply w-full px-4 py-3 bg-bg-input border-2 border-border-primary rounded-xl
+           text-text-primary focus:ring-2 focus:ring-accent-30 focus:border-accent-50
+           hover:border-accent-30 transition-all duration-200
+           backdrop-blur-sm shadow-accent-sm;
   }
 
   .form-label {
@@ -110,11 +120,14 @@
   }
 
   .form-section {
-    @apply bg-bg-card p-6 rounded-xl border border-border-primary backdrop-blur-sm;
+    @apply bg-bg-card p-6 rounded-xl border border-border-primary backdrop-blur-sm
+           shadow-accent-lg hover:shadow-accent-xl
+           transition-all duration-200;
   }
 
   .gradient-border {
-    @apply relative rounded-2xl p-[1px] bg-gradient-to-r from-accent to-accent-hover;
+    @apply relative rounded-2xl p-[1px] bg-gradient-to-r from-accent to-accent-hover
+           shadow-accent-xl;
   }
 
   .glass-card {
@@ -122,6 +135,8 @@
   }
 
   .summary-card {
-    @apply bg-bg-card rounded-xl border border-border-secondary p-4;
+    @apply bg-bg-card rounded-xl border-2 border-border-secondary p-4
+           shadow-accent-lg hover:shadow-accent-xl
+           transition-all duration-200 backdrop-blur-sm;
   }
 }

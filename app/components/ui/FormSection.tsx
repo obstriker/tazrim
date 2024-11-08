@@ -8,11 +8,16 @@ interface FormSectionProps {
   showRemove?: boolean;
 }
 
-export function FormSection({ title, children, onRemove, showRemove = false }: FormSectionProps) {
+export function FormSection({
+  title,
+  children,
+  onRemove,
+  showRemove = false,
+}: FormSectionProps) {
   return (
     <div className="form-section">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-medium text-white">{title}</h3>
+        <h3 className="text-lg font-medium text-text-primary">{title}</h3>
         {showRemove && onRemove && (
           <button
             type="button"

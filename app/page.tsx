@@ -12,7 +12,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-2 border-purple-500 border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-accent border-t-transparent shadow-lg shadow-accent/20"></div>
       </div>
     );
   }
@@ -26,14 +26,16 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-4 py-12">
         <header className="text-center mb-16">
           <div className="inline-block">
-            <span className="px-4 py-1.5 rounded-full text-xs font-medium bg-purple-500/20 text-purple-300 mb-4 block">
+            <span className="px-4 py-1.5 rounded-full text-sm font-medium bg-accent/20 text-accent mb-4 block
+                           shadow-lg shadow-accent/10 backdrop-blur-sm">
               Financial Report Generator
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-accent to-accent-hover bg-clip-text text-transparent
+                         drop-shadow-sm">
             Generate Your Annual Financial Report
           </h1>
-          <p className="text-lg text-text-primary-200 max-w-2xl mx-auto">
+          <p className="text-lg text-text-secondary max-w-2xl mx-auto">
             Answer a few questions about your business finances, and we'll create a
             comprehensive Excel report showing your annual cash flow.
           </p>
