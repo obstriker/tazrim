@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./styles/theme.css";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,8 +31,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(98,38,208,0.05),rgba(0,0,0,0))]" />
-        <AuthProvider>{children}</AuthProvider>
+        <div className="fixed inset-0 bg-gradient-radial from-accent/5 to-transparent" />
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

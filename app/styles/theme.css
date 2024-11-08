@@ -3,99 +3,125 @@
 @tailwind utilities;
 
 :root {
-  /* Background Colors */
-  --color-bg-primary: #000000;
-  --color-bg-secondary: rgba(98, 38, 208, 0.05);
-  --color-bg-card: rgba(17, 17, 23, 0.95);
-  --color-bg-input: rgba(30, 30, 35, 0.95);
-  
-  /* Text Colors */
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #a5a5a5;
-  --color-text-muted: #9ca3af;
-  --color-text-input: #e5e7eb;
-  
-  /* Border Colors */
-  --color-border-primary: rgba(139, 92, 246, 0.2);
-  --color-border-secondary: rgba(139, 92, 246, 0.1);
-  
-  /* Accent Colors */
-  --color-accent: #8b5cf6;
-  --color-accent-light: #9f75ff;
-  --color-accent-dark: #6d28d9;
+  /* Light Mode Colors */
+  --color-bg-primary-light: #ffffff;
+  --color-bg-secondary-light: rgba(98, 38, 208, 0.05);
+  --color-bg-card-light: rgba(249, 250, 251, 0.95);
+  --color-bg-input-light: rgba(255, 255, 255, 0.95);
+  --color-text-primary-light: #111827;
+  --color-text-secondary-light: #4B5563;
+  --color-text-muted-light: #6B7280;
+  --color-border-primary-light: rgba(139, 92, 246, 0.2);
+  --color-border-secondary-light: rgba(139, 92, 246, 0.1);
+  --color-accent-light: #8B5CF6;
+  --color-accent-hover-light: #7C3AED;
+
+  /* Dark Mode Colors */
+  --color-bg-primary-dark: #000000;
+  --color-bg-secondary-dark: rgba(98, 38, 208, 0.05);
+  --color-bg-card-dark: rgba(17, 17, 23, 0.95);
+  --color-bg-input-dark: rgba(30, 30, 35, 0.95);
+  --color-text-primary-dark: #ffffff;
+  --color-text-secondary-dark: #a5a5a5;
+  --color-text-muted-dark: #9ca3af;
+  --color-border-primary-dark: rgba(139, 92, 246, 0.2);
+  --color-border-secondary-dark: rgba(139, 92, 246, 0.1);
+  --color-accent-dark: #8B5CF6;
+  --color-accent-hover-dark: #9F75FF;
+
+  /* Default to light theme */
+  --color-bg-primary: var(--color-bg-primary-light);
+  --color-bg-secondary: var(--color-bg-secondary-light);
+  --color-bg-card: var(--color-bg-card-light);
+  --color-bg-input: var(--color-bg-input-light);
+  --color-text-primary: var(--color-text-primary-light);
+  --color-text-secondary: var(--color-text-secondary-light);
+  --color-text-muted: var(--color-text-muted-light);
+  --color-border-primary: var(--color-border-primary-light);
+  --color-border-secondary: var(--color-border-secondary-light);
+  --color-accent: var(--color-accent-light);
+  --color-accent-hover: var(--color-accent-hover-light);
+}
+
+[data-theme='dark'] {
+  --color-bg-primary: var(--color-bg-primary-dark);
+  --color-bg-secondary: var(--color-bg-secondary-dark);
+  --color-bg-card: var(--color-bg-card-dark);
+  --color-bg-input: var(--color-bg-input-dark);
+  --color-text-primary: var(--color-text-primary-dark);
+  --color-text-secondary: var(--color-text-secondary-dark);
+  --color-text-muted: var(--color-text-muted-dark);
+  --color-border-primary: var(--color-border-primary-dark);
+  --color-border-secondary: var(--color-border-secondary-dark);
+  --color-accent: var(--color-accent-dark);
+  --color-accent-hover: var(--color-accent-hover-dark);
 }
 
 @layer base {
   body {
-    @apply bg-gradient-to-b from-black via-gray-900 to-black text-white min-h-screen;
+    @apply bg-background text-text-primary transition-colors duration-200;
   }
 
-  /* Input placeholder styles */
   input::placeholder {
     @apply text-text-muted;
   }
 
-  /* Select element text color */
   select {
-    @apply text-text-input;
+    @apply text-text-primary bg-bg-input;
   }
 
-  /* Select element placeholder color */
   select option {
-    @apply bg-input text-text-input;
-  }
-
-  /* Select element placeholder option */
-  select option:first-child {
-    @apply text-text-muted;
+    @apply bg-bg-input text-text-primary;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center px-6 py-3 bg-accent hover:bg-accent-light text-white font-medium 
-           rounded-xl transition-all shadow-accent-lg
+    @apply inline-flex items-center px-6 py-3 bg-accent hover:bg-accent-hover text-white font-medium 
+           rounded-xl transition-all shadow-accent-md
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  .btn-secondary {
-    @apply inline-flex items-center px-6 py-3 border border-accent-border text-white 
-           font-medium rounded-xl hover:bg-accent-hover transition-all backdrop-blur-sm;
-  }
+.btn-secondary {
+  @apply inline-flex items-center px-6 py-3 border border-accent border-opacity-20 text-text-primary
+         font-medium rounded-xl hover:bg-accent hover:bg-opacity-10 transition-all backdrop-blur-sm;
+}
 
   .form-card {
-    @apply p-8 bg-card rounded-2xl border border-border-primary relative
-           backdrop-blur-sm shadow-accent;
+    @apply p-8 bg-bg-card rounded-2xl border border-border-primary
+           backdrop-blur-sm shadow-accent-sm;
   }
 
   .form-input {
-    @apply w-full px-4 py-3 bg-input border border-border-primary rounded-xl text-text-input
-           placeholder-text-muted focus:ring-2 focus:ring-accent focus:border-accent 
+    @apply w-full px-4 py-3 bg-bg-input border border-border-primary rounded-xl
+           text-text-primary placeholder-text-muted
+           focus:ring-2 focus:ring-accent focus:border-accent 
            backdrop-blur-sm transition-all;
   }
 
   .form-select {
-    @apply w-full px-4 py-3 bg-input border border-border-primary rounded-xl text-text-input
-           focus:ring-2 focus:ring-accent focus:border-accent backdrop-blur-sm transition-all;
+    @apply w-full px-4 py-3 bg-bg-input border border-border-primary rounded-xl
+           text-text-primary focus:ring-2 focus:ring-accent focus:border-accent 
+           backdrop-blur-sm transition-all;
   }
 
   .form-label {
     @apply block text-sm font-medium text-text-secondary mb-2;
   }
 
+  .form-section {
+    @apply bg-bg-card p-6 rounded-xl border border-border-primary backdrop-blur-sm;
+  }
+
   .gradient-border {
-    @apply relative rounded-2xl p-[1px] bg-gradient-to-r from-accent to-accent-light;
+    @apply relative rounded-2xl p-[1px] bg-gradient-to-r from-accent to-accent-hover;
   }
 
   .glass-card {
-    @apply bg-card backdrop-blur-xl;
+    @apply bg-bg-card backdrop-blur-xl;
   }
 
   .summary-card {
-    @apply bg-card rounded-xl border border-border-secondary p-4;
-  }
-
-  .form-section {
-    @apply bg-card p-6 rounded-xl border border-border-primary backdrop-blur-sm;
+    @apply bg-bg-card rounded-xl border border-border-secondary p-4;
   }
 }

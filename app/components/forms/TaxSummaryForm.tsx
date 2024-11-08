@@ -1,13 +1,18 @@
+"use client";
+
 import React from 'react';
-import { ChevronLeft, Download } from 'lucide-react';
-import axios from 'axios';
+import { Download } from 'lucide-react';
+import { NavigationButtons } from '../ui/NavigationButtons';
+import { SummaryCard } from '../ui/SummaryCard';
+import { FormSection } from '../ui/FormSection';
 
 interface TaxSummaryFormProps {
   formData: any;
+  onNext: (data: any) => void;
   onBack: () => void;
 }
 
-export function TaxSummaryForm({ formData, onBack }: TaxSummaryFormProps) {
+export function TaxSummaryForm({ formData, onNext, onBack }: TaxSummaryFormProps) {
   const calculateTotalIncome = () => {
     return formData.income.sources.reduce((total: number, source: any) => {
       const amount = parseFloat(source.amount);
@@ -29,114 +34,79 @@ export function TaxSummaryForm({ formData, onBack }: TaxSummaryFormProps) {
   const netIncome = totalIncome - totalExpenses;
   const estimatedTax = netIncome * 0.25; // Simplified tax calculation
 
-  const handleDownloadReport = async () => {
-    const reportData = {
+  const currencyFormatter = (value: number) => 
+    `$${value.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onNext({
       totalIncome,
       totalExpenses,
       netIncome,
-      estimatedTax,
-      businessDetails: formData.business,
-    };
-
-    try {
-      console.log(reportData);
-      const response = await axios.post('http://localhost:3000/api/report', reportData, {
-        responseType: 'blob', // Important for handling binary data
-      });
-
-      // Create a URL for the blob and trigger a download
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'report.csv'); // Specify the file name
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.error('Error downloading the report:', error);
-    }
+      estimatedTax
+    });
   };
 
   return (
-    <div className="space-y-8">
-      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-        <h3 className="text-xl font-semibold text-gray-900 mb-6">Annual Summary</h3>
-        
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded-lg border border-gray-100">
-              <div className="text-sm text-gray-600">Total Annual Income</div>
-              <div className="text-2xl font-bold text-gray-900">
-                ${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-              </div>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg border border-gray-100">
-              <div className="text-sm text-gray-600">Total Annual Expenses</div>
-              <div className="text-2xl font-bold text-gray-900">
-                ${totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded-lg border border-gray-100">
-              <div className="text-sm text-gray-600">Net Income</div>
-              <div className="text-2xl font-bold text-gray-900">
-                ${netIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-              </div>
-            </div>
-            
-            <div className="bg-white p-4 rounded-lg border border-gray-100">
-              <div className="text-sm text-gray-600">Estimated Tax (25%)</div>
-              <div className="text-2xl font-bold text-gray-900">
-                ${estimatedTax.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-              </div>
-            </div>
-          </div>
+    <form onSubmit={handleSubmit} className="space-y-8">
+      <FormSection title="Annual Summary">
+        <div className="grid grid-cols-2 gap-4">
+          <SummaryCard
+            label="Total Annual Income"
+            value={totalIncome}
+            formatter={currencyFormatter}
+          />
+          <SummaryCard
+            label="Total Annual Expenses"
+            value={totalExpenses}
+            formatter={currencyFormatter}
+          />
+          <SummaryCard
+            label="Net Income"
+            value={netIncome}
+            formatter={currencyFormatter}
+          />
+          <SummaryCard
+            label="Estimated Tax (25%)"
+            value={estimatedTax}
+            formatter={currencyFormatter}
+          />
         </div>
-      </div>
+      </FormSection>
 
-      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-        <h3 className="text-xl font-semibold text-gray-900 mb-4">Business Details</h3>
+      <FormSection title="Business Details">
         <div className="grid grid-cols-2 gap-x-6 gap-y-4">
           <div>
-            <div className="text-sm text-gray-600">Business Name</div>
-            <div className="text-lg font-medium text-gray-900">{formData.business.businessName}</div>
+            <div className="text-sm text-text-secondary">Business Name</div>
+            <div className="text-lg font-medium text-text-primary">
+              {formData.business.businessName}
+            </div>
           </div>
           <div>
-            <div className="text-sm text-gray-600">Business Type</div>
-            <div className="text-lg font-medium text-gray-900">{formData.business.businessType}</div>
+            <div className="text-sm text-text-secondary">Business Type</div>
+            <div className="text-lg font-medium text-text-primary">
+              {formData.business.businessType}
+            </div>
           </div>
           <div>
-            <div className="text-sm text-gray-600">Fiscal Year Start</div>
-            <div className="text-lg font-medium text-gray-900">{formData.business.fiscalYearStart}</div>
+            <div className="text-sm text-text-secondary">Fiscal Year Start</div>
+            <div className="text-lg font-medium text-text-primary">
+              {formData.business.fiscalYearStart}
+            </div>
           </div>
           <div>
-            <div className="text-sm text-gray-600">Currency</div>
-            <div className="text-lg font-medium text-gray-900">{formData.business.currency}</div>
+            <div className="text-sm text-text-secondary">Currency</div>
+            <div className="text-lg font-medium text-text-primary">
+              {formData.business.currency}
+            </div>
           </div>
         </div>
-      </div>
+      </FormSection>
 
-      <div className="flex justify-between mt-8">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50"
-        >
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Previous Step
-        </button>
-        <button
-          type="button"
-          onClick={handleDownloadReport}
-          className="btn-primary"
-        >
-          <Download className="mr-2 h-4 w-4" />
-          Download Report
-        </button>
-      </div>
-    </div>
+      <NavigationButtons 
+        onBack={onBack}
+        submitText="Continue to Payment"
+      />
+    </form>
   );
 }
