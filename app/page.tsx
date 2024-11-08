@@ -30,10 +30,10 @@ export default function Home() {
               Financial Report Generator
             </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold text-text-primary mb-4 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
             Generate Your Annual Financial Report
           </h1>
-          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          <p className="text-lg text-text-primary-200 max-w-2xl mx-auto">
             Answer a few questions about your business finances, and we'll create a
             comprehensive Excel report showing your annual cash flow.
           </p>

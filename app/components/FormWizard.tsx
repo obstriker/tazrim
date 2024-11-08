@@ -70,13 +70,13 @@ export function FormWizard() {
                     className={`flex h-14 w-14 items-center justify-center rounded-xl mb-4 relative z-10
                       ${
                         index <= currentStep
-                          ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/30'
-                          : 'bg-gray-900 text-gray-500 border border-purple-400/10'
+                          ? 'bg-purple-600 text-text-primary shadow-lg shadow-purple-600/30'
+                          : 'bg-primary text-text-primary border border-purple-400/10'
                       }`}
                   >
                     <step.icon className="h-6 w-6" />
                   </div>
-                  <span className="text-sm font-medium text-gray-200 text-center absolute -bottom-6 w-full">
+                  <span className="text-sm font-medium text-text-secondary text-center absolute -bottom-6 w-full">
                     {step.label}
                   </span>
                 </div>

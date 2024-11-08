@@ -39,7 +39,7 @@ export function DownloadReportForm({ formData }: DownloadReportFormProps) {
       <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
         <Download className="h-8 w-8 text-white" />
       </div>
-      <h2 className="text-2xl font-bold text-white mb-4">Your Report is Ready!</h2>
+      <h2 className="text-2xl font-bold text-text-primary mb-4">Your Report is Ready!</h2>
       <p className="text-gray-400 mb-8">Click the button below to download your financial report.</p>
       <button
         onClick={handleDownload}
