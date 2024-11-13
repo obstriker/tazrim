@@ -1,4 +1,4 @@
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 from openpyxl.styles import PatternFill
 import pickle
 from flask import Flask, jsonify, request
@@ -27,27 +27,45 @@ app = Flask(__name__)
 # prepared pkls
 # Create class to install tables and populate data
 
+def represents_int(s):
+    try: 
+        int(s)
+    except ValueError:
+        return False
+    else:
+        return True
 
 def copy_cell(source_cell, target_cell):
-    # import ipdb
-    # ipdb.set_trace()
     # Copy the value
     target_cell.value = source_cell.value
     
     # Copy the style properties
-    # print(target_cell.font)
     target_cell.font = source_cell.font.copy()
     target_cell.fill = source_cell.fill.copy()
-
     target_cell.alignment = source_cell.alignment.copy()
     target_cell.border = source_cell.border.copy()
-
-    target_cell.data_type = source_cell.data_type
-    # target_cell.is_date = source_cell.is_date
     target_cell.number_format = source_cell.number_format
-    
-    target_cell.value = source_cell.value
+    target_cell.data_type = source_cell.data_type
 
+    # Copy additional properties
+    target_cell.hyperlink = source_cell.hyperlink  # Copy hyperlink
+    if source_cell.comment:
+        target_cell.comment = source_cell.comment.copy()  # Copy comment
+    # if source_cell.data_validation:
+        # target_cell.data_validation = source_cell.data_validation.copy()  # Copy data validation
+    target_cell.protection = source_cell.protection.copy()  # Copy protection settings
+
+def copy_worksheet_properties(source_worksheet, target_worksheet):
+    # Copy row heights
+    for row in source_worksheet.row_dimensions:
+        target_worksheet.row_dimensions[row].height = source_worksheet.row_dimensions[row].height
+
+    # Copy column widths
+    for col in source_worksheet.column_dimensions:
+        target_worksheet.column_dimensions[col].width = source_worksheet.column_dimensions[col].width
+
+    # Copy sheet view properties (including direction)
+    target_worksheet.sheet_view.rightToLeft = source_worksheet.sheet_view.rightToLeft
 
 class incomeTable:
     def __init__(self, data, row = 2, col = 2):
@@ -59,7 +77,7 @@ class incomeTable:
         with open('tables.pkl', 'rb') as f:
             pkl = pickle.load(f)
         
-        self.headers = pkl["expenses"]["headers"][1]
+        self.headers = pkl["expenses"]["headers"]
         self.footer = pkl["expenses"]["footer"][0]
         
     def get_rows(self):
@@ -72,8 +90,6 @@ class incomeTable:
             row.append(i)
         self.data.append(row)
 
-        
-
     def get_data(self):
         return [self.headers] + self.data  # Include headers in the output
 
@@ -83,35 +99,72 @@ class incomeTable:
 
     def install_table(self, worksheet, row, col):
         # Set headers
-        for j, header in enumerate(self.headers):
-            c = worksheet.cell(row=row, column=col + j, value=header.value) # Set header values
-            print(header.value)
+        for j, header in enumerate(self.headers[0]):
+            c = worksheet.cell(row=row, column=col + j, value=header.value)  # Set header values
             copy_cell(header, c)
+            # Add border to header cell
+            # c.border = header.border.copy()  # Copy border style
+
+        for j, header in enumerate(self.headers[1]):
+            c = worksheet.cell(row=row + 1, column=col + j, value=header.value)  # Set header values
+            copy_cell(header, c)
+
+            # Add border to header cell
+            # c.border = header.border.copy()  # Copy border style
 
         # Set data
         for i, data_row in enumerate(self.data):
             for j, value in enumerate(data_row):
-                worksheet.cell(row=row + 1 + i, column=col + j, value=value)  # Set data values
+                cell = worksheet.cell(row=row + 2 + i, column=col + j, value=value)  # Set data values
+
+                # Add border to data cell
+                cell.border = header.border.copy()  # Copy border style
+
+            # Apply font size and background color to the entire row
+            for j in range(len(data_row)):
+                cell = worksheet.cell(row=row + 2 + i, column=col + j)
+                cell.font = cell.font.copy(size=14)  # Set font size to 14 (or any desired size)
+            
+                # Alternate background color for the entire row
+                if i % 2 == 0:
+                    cell.fill = PatternFill(start_color="D9EAD3", end_color="D9EAD3", fill_type="solid")  # Light green
+                else:
+                    cell.fill = PatternFill(start_color="FFFFFF", end_color="FFFFFF", fill_type="solid")  # White
+
+                # Check if the value is a number and apply currency format
+                if isinstance(cell.value, (int, float)) or (isinstance(cell.value, (str)) and represents_int(cell.value)):
+                    cell.number_format = '"₪"#,##0.00'  # Set number format to ILS currency
+
+        # Install footer
+        footer_row = row + 2 + len(self.data)  # Calculate the row for the footer
+        for j, footer_value in enumerate(self.footer):
+            # Assuming the footer is a SUM formula, adjust the range accordingly
+            sum_formula = f"=SUM({worksheet.cell(row=row + 2, column=col + j).coordinate}:{worksheet.cell(row=footer_row - 1, column=col + j).coordinate})"
+            c = worksheet.cell(row=footer_row, column=col + j, value=sum_formula)  # Set footer values with SUM formula
+            copy_cell(footer_value, c)  # Copy footer styles
 
     def save(self, file):
         pass
 
 class ExcelPopulator:
-    def __init__(self, filename):
-        self.filename = filename
-        self.workbook = load_workbook(filename=filename)
+    def __init__(self, filename=""):
+        if filename == "":
+            self.workbook = Workbook()
+            self.filename = "template.xlsx"
+        else:
+            self.workbook = load_workbook(filename=filename)
         self.sheet = self.workbook.active
 
     def populate_table(self, table, start_row=1, start_col=1):
         for row_index, row in enumerate(table.get_data()):
             for col_index, value in enumerate(row):
-                self.sheet.cell(row=start_row + row_index, column=start_col + col_index, value=value)
+                self.sheet.cell(row=start_row + row_index + 2, column=start_col + col_index, value=value)
     
     def add_data(self, data, start_row=1, start_col=1):
         for row_index, row in enumerate(data):
             for col_index, value in enumerate(row):
                 try:
-                    self.sheet.cell(row=start_row + row_index, column=start_col + col_index, value=value)
+                    self.sheet.cell(row=start_row + row_index + 2, column=start_col + col_index, value=value)
                 except:
                     continue
                 # print(col_index, value)
@@ -199,7 +252,7 @@ def create_pkl():
 
 if __name__ == "__main__":
     # Create an instance of ExcelPopulator
-    excel_populator = ExcelPopulator("template_test.xlsx")
+    excel_populator = ExcelPopulator()
 
     # Define the headers and data
     headers = ["Name", "Last Year", "Future", "Today"]
@@ -211,8 +264,10 @@ if __name__ == "__main__":
     ]
 
     # Add headers to the sheet
-    excel_populator.add_data([headers], start_row=1, start_col=1)  # Assuming you want headers in row 1
+    # excel_populator.add_data([headers], start_row=1, start_col=1)  # Assuming you want headers in row 1
 
+    template = ExcelPopulator("tazrim.xlsx")
+    copy_worksheet_properties(template.workbook.active, excel_populator.workbook.active)
     # Add data to the sheet starting from row 2
     # excel_populator.add_data(income_data, start_row=2, start_col=1)
     # Create an instance of incomeTable
@@ -220,8 +275,8 @@ if __name__ == "__main__":
     # create_pkl()
     # Insert a new row
     income_table.insert_row("Alice Johnson", 80000, 90000, 85000, [8000, 9000, 10000])
-    income_table.install_table(excel_populator.sheet, 7,1)
-
+    income_table.install_table(excel_populator.sheet, 8,1)
+    income_table.install_table(excel_populator.sheet, 20,1)
 
     # Save the workbook after installation
     excel_populator.save("template.xlsx")
