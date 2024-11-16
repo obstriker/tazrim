@@ -31,6 +31,18 @@ app = Flask(__name__)
 # 1. support multiple rows of footer and headers, for example self.headers[0],self.headers[1],self.headers[2],
 #    and install_table will loop through them all and apply them.
 
+# Maybe use 2 classes, one to represent a table, and another to represent the whole excel file
+# class to represent a table with headers, footer, and data
+        # functions: populate_data
+# class to represent the whole excel file
+        # functions: install_table
+
+class ExcelTable:
+    def __init__(self, headers, footer, data):
+        self.headers = headers
+        self.footer = footer
+        self.data = data
+
 def represents_int(s):
     try: 
         int(s)
