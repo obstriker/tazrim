@@ -27,6 +27,10 @@ app = Flask(__name__)
 # prepared pkls
 # Create class to install tables and populate data
 
+# install table - 
+# 1. support multiple rows of footer and headers, for example self.headers[0],self.headers[1],self.headers[2],
+#    and install_table will loop through them all and apply them.
+
 def represents_int(s):
     try: 
         int(s)
@@ -67,18 +71,22 @@ def copy_worksheet_properties(source_worksheet, target_worksheet):
     # Copy sheet view properties (including direction)
     target_worksheet.sheet_view.rightToLeft = source_worksheet.sheet_view.rightToLeft
 
+def load_pkl():
+    # Load the object from the file
+    with open('tables.pkl', 'rb') as f:
+        pkl = pickle.load(f)
+    return pkl
+
 class incomeTable:
     def __init__(self, data, row = 2, col = 2):
         self.start_row = row
         self.start_col = col
         self.data = data
 
-        # Load the object from the file
-        with open('tables.pkl', 'rb') as f:
-            pkl = pickle.load(f)
+        pkl = load_pkl()
         
-        self.headers = pkl["expenses"]["headers"]
-        self.footer = pkl["expenses"]["footer"][0]
+        self.headers = pkl["income"]["headers"]
+        self.footer = pkl["income"]["footer"][0]
         
     def get_rows(self):
         # return number of rows including headers according to data entries
@@ -275,7 +283,10 @@ if __name__ == "__main__":
     # create_pkl()
     # Insert a new row
     income_table.insert_row("Alice Johnson", 80000, 90000, 85000, [8000, 9000, 10000])
-    income_table.install_table(excel_populator.sheet, 8,1)
+    income_table.install_table(excel_populator.sheet, 10,1)
+
+    income_table.headers = load_pkl()["expenses"]["headers"]
+    income_table.footer = load_pkl()["expenses"]["footer"][0]
     income_table.install_table(excel_populator.sheet, 20,1)
 
     # Save the workbook after installation
